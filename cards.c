@@ -3,6 +3,9 @@
 #include <string.h>
 
 #define AMOUNT_OF_CARDS 5
+#define AMOUNT_OF_FLAGS 1
+#define MIN_AMOUNT_OF_ARGUMENTS (AMOUNT_OF_CARDS + 1)
+#define MAX_AMOUNT_OF_ARGUMENTS (AMOUNT_OF_CARDS + AMOUNT_OF_FLAGS + 1)
 
 bool has_duplicates(char *cards[]) {
     for (int i = 0; i < AMOUNT_OF_CARDS; i++) {
@@ -29,22 +32,29 @@ bool is_a_card(const char * card) {
     return true;
 }
 
-int main(int argc, char *argv[]) {
+bool input_is_bad(int argc, char * argv[]) {
     // Check whether the number of arguments is right
-    if (argc < 6 || argc > 7) {
-        printf("ERROR");
-        return 1;
+    if (argc < MIN_AMOUNT_OF_ARGUMENTS || argc > MAX_AMOUNT_OF_ARGUMENTS) {
+        return true;
     }
 
     // Check if the cards are, in fact, cards
-    for (int i = 1; i < 6; i++) {
+    for (int i = 1; i < MIN_AMOUNT_OF_ARGUMENTS; i++) {
         if (is_a_card(argv[i]) == false) {
-            printf("ERROR");
-            return 1;
+            return true;
         }
     }
 
+    // Check if the cards are from the same suit
     if (has_duplicates(&argv[1])) {
+        return true;
+    }
+
+    return false;
+}
+
+int main(int argc, char *argv[]) {
+    if (input_is_bad(argc, argv) == true) {
         printf("ERROR");
         return 1;
     }
