@@ -1,11 +1,17 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define AMOUNT_OF_CARDS 5
 #define AMOUNT_OF_FLAGS 1
 #define MIN_AMOUNT_OF_ARGUMENTS (AMOUNT_OF_CARDS + 1)
 #define MAX_AMOUNT_OF_ARGUMENTS (AMOUNT_OF_CARDS + AMOUNT_OF_FLAGS + 1)
+
+ bool flag_correct(const char input[]) {
+    if (strcmp(input, "1") == 0 || strcmp(input, "0") == 0) return true;
+    return false;
+}
 
 bool has_duplicates(char *cards[]) {
     for (int i = 0; i < AMOUNT_OF_CARDS; i++) {
@@ -58,4 +64,17 @@ int main(int argc, char *argv[]) {
         printf("ERROR");
         return 1;
     }
+
+    unsigned short flag = 0;
+
+    if (argc == MAX_AMOUNT_OF_ARGUMENTS) {
+        if (flag_correct(argv[MAX_AMOUNT_OF_ARGUMENTS - 1]) == true) {
+            flag = atoi(argv[MAX_AMOUNT_OF_ARGUMENTS - 1]);
+        } else {
+            printf("ERROR");
+            return 1;
+        }
+    }
+
+     printf("%d", flag);
 }
