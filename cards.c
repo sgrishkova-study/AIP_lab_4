@@ -111,6 +111,5 @@ int main(int argc, char *argv[]) {
     convert_cards_to_weights(&argv[1], weights);
     count_combinations(weights, &combinations, TARGET_SUM, 0);
 
-    printf("%d\n", combinations);
     return 0;
 }
