@@ -90,7 +90,12 @@ void print_combination(char *cards[], bool selected[], int number) {
     printf("]\n");
 }
 
-void count_combinations(const unsigned short weights[], unsigned short *combinations_count, int remaining_sum, unsigned short index, bool selected[], char *cards[], bool detailed) {
+void count_combinations(const unsigned short weights[], unsigned short *combinations_count, int remaining_sum, unsigned short index, bool selected[], char *cards[], bool detailed, unsigned short *max_recursion_depth, unsigned short *recursion_calls, unsigned short current_depth) {
+    *recursion_calls += 1;
+    if (current_depth > *max_recursion_depth) {
+        *max_recursion_depth = current_depth;
+    }
+
     if (remaining_sum == 0) {
        *combinations_count += 1;
 
@@ -105,12 +110,12 @@ void count_combinations(const unsigned short weights[], unsigned short *combinat
     }
 
     selected[index] = false;
-    count_combinations(weights, combinations_count, remaining_sum, index + 1, selected, cards, detailed);
+    count_combinations(weights, combinations_count, remaining_sum, index + 1, selected, cards, detailed, max_recursion_depth, recursion_calls, current_depth + 1);
 
     if (weights[index] <= remaining_sum) {
         selected[index] = true;
 
-        count_combinations(weights, combinations_count, remaining_sum - weights[index], index + 1, selected, cards, detailed);
+        count_combinations(weights, combinations_count, remaining_sum - weights[index], index + 1, selected, cards, detailed, max_recursion_depth, recursion_calls, current_depth + 1);
 
         selected[index] = false;
     }
@@ -135,11 +140,17 @@ int main(int argc, char *argv[]) {
 
     unsigned short weights[AMOUNT_OF_CARDS] = {0};
     unsigned short combinations = 0;
+    unsigned short max_recursion_depth = 0;
+    unsigned short recursion_calls = 0;
     bool selected[AMOUNT_OF_CARDS] = {false};
 
     convert_cards_to_weights(&argv[1], weights);
-    count_combinations(weights, &combinations, TARGET_SUM, 0, selected, &argv[1], flag);
+    count_combinations(weights, &combinations, TARGET_SUM, 0, selected, &argv[1], flag, &max_recursion_depth, &recursion_calls, 1);
 
+    if (flag == 1) {
+        printf("\nMaximum recursion depth: %u\n", max_recursion_depth);
+        printf("Total recursive calls: %u\n", recursion_calls);
+    }
     printf("RESULT: %d\n", combinations);
 
     return 0;
