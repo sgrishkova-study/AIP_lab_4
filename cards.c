@@ -78,7 +78,7 @@ void convert_cards_to_weights(char * cards[], unsigned short weights[]) {
     }
 }
 
-void count_combinations(unsigned short weights[], unsigned short *combinations, unsigned short sum, unsigned short i) {
+void count_combinations(unsigned short weights[], unsigned short *combinations, int sum, unsigned short i) {
     if (sum < 0 || i >= AMOUNT_OF_CARDS) {
     } else if (sum - weights[i] == 0) {
         *combinations += 1;
