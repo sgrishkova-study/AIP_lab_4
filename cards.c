@@ -11,11 +11,6 @@
 #define WEIGHT_OF_A 1
 #define WEIGHT_OF_JQK 10
 
-// сооо окей наивная реализация - просто перебирать варианты и смотреть что получится, что нет
-// как вариант можно отмести сразу некоторые случаи
-// если у нас все карты с четными значениями - они идут нафиг
-// если у нас минимальный вес карты - 10, то они тоже идут нафиг
-
 bool flag_correct(const char input[]) {
     if (strcmp(input, "1") == 0 || strcmp(input, "0") == 0) return true;
     return false;
@@ -83,6 +78,17 @@ void convert_cards_to_weights(char * cards[], unsigned short weights[]) {
     }
 }
 
+void count_combinations(unsigned short weights[], unsigned short *combinations, unsigned short sum, unsigned short i) {
+    if (sum < 0 || i >= AMOUNT_OF_CARDS) {
+    } else if (sum - weights[i] == 0) {
+        *combinations += 1;
+        count_combinations(weights, combinations, sum, i + 1);
+    } else {
+        count_combinations(weights, combinations, sum, i + 1);
+        count_combinations(weights, combinations, sum - weights[i], i + 1);
+    }
+}
+
 int main(int argc, char *argv[]) {
     if (input_is_bad(argc, argv) == true) {
         printf("ERROR");
@@ -101,7 +107,10 @@ int main(int argc, char *argv[]) {
     }
 
     unsigned short weights[AMOUNT_OF_CARDS] = {0};
+    unsigned short combinations = 0;
     convert_cards_to_weights(&argv[1], weights);
+    count_combinations(weights, &combinations, TARGET_SUM, 0);
 
+    printf("%d\n", combinations);
     return 0;
 }
