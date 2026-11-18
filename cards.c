@@ -7,8 +7,16 @@
 #define AMOUNT_OF_FLAGS 1
 #define MIN_AMOUNT_OF_ARGUMENTS (AMOUNT_OF_CARDS + 1)
 #define MAX_AMOUNT_OF_ARGUMENTS (AMOUNT_OF_CARDS + AMOUNT_OF_FLAGS + 1)
+#define TARGET_SUM 15
+#define WEIGHT_OF_A 1
+#define WEIGHT_OF_JQK 10
 
- bool flag_correct(const char input[]) {
+// сооо окей наивная реализация - просто перебирать варианты и смотреть что получится, что нет
+// как вариант можно отмести сразу некоторые случаи
+// если у нас все карты с четными значениями - они идут нафиг
+// если у нас минимальный вес карты - 10, то они тоже идут нафиг
+
+bool flag_correct(const char input[]) {
     if (strcmp(input, "1") == 0 || strcmp(input, "0") == 0) return true;
     return false;
 }
@@ -59,6 +67,22 @@ bool input_is_bad(int argc, char * argv[]) {
     return false;
 }
 
+void convert_cards_to_weights(char * cards[], unsigned short weights[]) {
+    for (int i = 0; i < AMOUNT_OF_CARDS; i++) {
+        if (strlen(cards[i]) == 3) {
+            weights[i] = 10;
+        } else {
+            if (cards[i][0] == 'A') {
+                weights[i] = WEIGHT_OF_A;
+            } else if (strchr("JQK", cards[i][0]) != NULL) {
+                weights[i] = WEIGHT_OF_JQK;
+            } else {
+                weights[i] = atoi(&cards[i][0]);
+            }
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
     if (input_is_bad(argc, argv) == true) {
         printf("ERROR");
@@ -76,5 +100,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-     printf("%d", flag);
+    unsigned short weights[AMOUNT_OF_CARDS] = {0};
+    convert_cards_to_weights(&argv[1], weights);
+
+    return 0;
 }
