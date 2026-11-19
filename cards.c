@@ -91,11 +91,13 @@ void print_combination(char *cards[], bool selected[], int number) {
 }
 
 void count_combinations(const unsigned short weights[], unsigned short *combinations_count, int remaining_sum, unsigned short index, bool selected[], char *cards[], bool detailed, unsigned short *max_recursion_depth, unsigned short *recursion_calls, unsigned short current_depth) {
+    // Collect meta information for detailed report
     *recursion_calls += 1;
     if (current_depth > *max_recursion_depth) {
         *max_recursion_depth = current_depth;
     }
 
+    // Base case 1: target sum is achived
     if (remaining_sum == 0) {
        *combinations_count += 1;
 
@@ -105,13 +107,16 @@ void count_combinations(const unsigned short weights[], unsigned short *combinat
        return;
     }
 
+    // Base case 2: run out of cards
     if (index >= AMOUNT_OF_CARDS) {
         return;
     }
 
+    // Case 1: card is skipped
     selected[index] = false;
     count_combinations(weights, combinations_count, remaining_sum, index + 1, selected, cards, detailed, max_recursion_depth, recursion_calls, current_depth + 1);
 
+    // Case 2: if inclusion of card makes sense, the card is included
     if (weights[index] <= remaining_sum) {
         selected[index] = true;
 
@@ -123,7 +128,7 @@ void count_combinations(const unsigned short weights[], unsigned short *combinat
 
 int main(int argc, char *argv[]) {
     if (input_is_bad(argc, argv) == true) {
-        printf("ERROR");
+        printf("ERROR\n");
         return 1;
     }
 
@@ -133,7 +138,7 @@ int main(int argc, char *argv[]) {
         if (flag_correct(argv[MAX_AMOUNT_OF_ARGUMENTS - 1]) == true) {
             flag = atoi(argv[MAX_AMOUNT_OF_ARGUMENTS - 1]);
         } else {
-            printf("ERROR");
+            printf("ERROR\n");
             return 1;
         }
     }
