@@ -129,6 +129,47 @@ void count_combinations(const unsigned short weights[], unsigned short *combinat
     }
 }
 
+// Pruning
+bool is_combo_bad(const unsigned short weights[]) {
+    // Check if all cards have even value
+    if (TARGET_SUM % 2 == 1) {
+        bool has_odd = false;
+
+        for (int i = 0; i < AMOUNT_OF_CARDS; i++) {
+            if (weights[i] % 2 == 1) {
+                has_odd = true;
+                break;
+            }
+        }
+
+        if (has_odd == false) {
+            return true;
+        }
+    }
+
+    // Check if target sum can be reached
+    unsigned short sum = 0;
+    for (int i = 0; i < AMOUNT_OF_CARDS; i++) {
+        sum += weights[i];
+    }
+    if (sum < TARGET_SUM) {
+        return true;
+    }
+
+    // Check if 2 * min value of cards doesnt succeed target sum
+    unsigned short min = weights[0];
+    for (int i = 0; i < AMOUNT_OF_CARDS; i++) {
+        if (weights[i] < min) {
+            min = weights[i];
+        }
+    }
+    if (2 * min > TARGET_SUM) {
+        return true;
+    }
+
+    return false;
+}
+
 int main(int argc, char *argv[]) {
     if (input_is_bad(argc, argv) == true) {
         printf("ERROR\n");
@@ -153,12 +194,16 @@ int main(int argc, char *argv[]) {
     bool selected[AMOUNT_OF_CARDS] = {false};
 
     convert_cards_to_weights(&argv[1], weights);
-    count_combinations(weights, &combinations, TARGET_SUM, 0, selected, &argv[1], flag, &max_recursion_depth, &recursion_calls, 0);
+
+    if (is_combo_bad(weights) == false) {
+        count_combinations(weights, &combinations, TARGET_SUM, 0, selected, &argv[1], flag, &max_recursion_depth, &recursion_calls, 0);
+    }
 
     if (flag == 1) {
         printf("\nMaximum recursion depth: %u\n", max_recursion_depth);
         printf("Total recursive calls: %u\n", recursion_calls);
     }
+
     printf("RESULT: %d\n", combinations);
 
     return 0;
