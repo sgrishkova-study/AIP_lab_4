@@ -96,6 +96,9 @@ void count_combinations(const unsigned short weights[], unsigned short *combinat
     if (current_depth > *max_recursion_depth) {
         *max_recursion_depth = current_depth;
     }
+    // if (detailed == true) {
+    //     printf("Current recursion depth: %u | Current call: %u\n", *max_recursion_depth, *recursion_calls);
+    // }
 
     // Base case 1: target sum is achived
     if (remaining_sum == 0) {
@@ -150,7 +153,7 @@ int main(int argc, char *argv[]) {
     bool selected[AMOUNT_OF_CARDS] = {false};
 
     convert_cards_to_weights(&argv[1], weights);
-    count_combinations(weights, &combinations, TARGET_SUM, 0, selected, &argv[1], flag, &max_recursion_depth, &recursion_calls, 1);
+    count_combinations(weights, &combinations, TARGET_SUM, 0, selected, &argv[1], flag, &max_recursion_depth, &recursion_calls, 0);
 
     if (flag == 1) {
         printf("\nMaximum recursion depth: %u\n", max_recursion_depth);
